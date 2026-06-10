@@ -25,3 +25,19 @@ def add(task):
     with open("tasks.json", 'w') as file:
         json.dump(existing_tasks, file, indent=4)
     print("New Task has been added! do list() to view all you tasks.")
+
+def delete(id):
+    with open("tasks.json", "r") as file:
+        existing_tasks = json.load(file)
+    for i in range(len(existing_tasks)):
+        if(existing_tasks[i]["id"] == str(id)):
+            del existing_tasks[i]
+            with open("tasks.json", 'w') as file:
+                json.dump(existing_tasks, file, indent=4)
+            print("The task has been deleted! do list() to view all you tasks.")
+            break
+    else:
+        print(
+            "No such task ID. Please insert a correct one, do list() to view all you tasks."
+        )
+
