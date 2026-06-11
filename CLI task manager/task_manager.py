@@ -1,6 +1,7 @@
 import json
 import uuid
 from pathlib import Path
+import sys
 
 tasks_file = Path("tasks.json")
 
@@ -31,24 +32,24 @@ def add(task):
     existing_tasks.append(new_task)
     with open("tasks.json", 'w') as file:
         json.dump(existing_tasks, file, indent=4)
-    print("New Task has been added! do list() to view all you tasks.")
+    print("New Task has been added! do list to view all you tasks.")
 
 def delete(id):
     with open("tasks.json", "r") as file:
         existing_tasks = json.load(file)
     for i in range(len(existing_tasks)):
-        if(existing_tasks[i]["id"] == str(id)):
+        if(existing_tasks[i]["ID"] == str(id)):
             del existing_tasks[i]
             with open("tasks.json", 'w') as file:
                 json.dump(existing_tasks, file, indent=4)
-            print("The task has been deleted! do list() to view all you tasks.")
+            print("The task has been deleted! do list to view all you tasks.")
             break
     else:
         print(
-            "No such task ID. Please insert a correct one, do list() to view all you tasks."
+            "No such task ID. Please insert a correct one, do list to view all you tasks."
         )
 
-def Done(id):
+def done(id):
     with open("tasks.json", "r") as file:
         existing_tasks = json.load(file)
     for i in range(len(existing_tasks)):
@@ -60,5 +61,29 @@ def Done(id):
             break
     else:
         print(
-            "No such task ID. Please insert a correct one, do list() to view all you tasks."
+            "No such task ID. Please insert a correct one, do list to view all you tasks."
         )
+
+arguments = sys.argv[1:]
+
+if len(arguments) >= 1:
+    match arguments:
+        case ["list"]:
+            list_tasks()
+        case ["list", status_value]:
+            if status_value == "true":
+                list_tasks(status=True)
+            else:
+                list_tasks(status=False)
+        case ["add", task_text]:
+            add(task=task_text)
+        case ["delete", task_id]:
+            delete(id=task_id)
+        case ["done", task_id]:
+            done(id=task_id)
+        case _:
+            print("""Command is not recognised. Use one of the following:
+                        list (true or false for "is_done" field, leave empty for the full list)
+                        add "task goes here",
+                        delete task_id
+                        done task_id""")
